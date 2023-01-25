@@ -1,9 +1,10 @@
 import threading
 from typing import Dict
 
-from src.datastructures import ThreadSafeCounter
+from src.datastructures.thread_safe_counter import ThreadSafeCounter
 
-class ThreadSafeConsumerDict():
+
+class ThreadSafeConsumerDict:
     """
     A thread-safe dictionary class to store the mapping of consumer ids
     with their offsets in the queue.
@@ -12,10 +13,10 @@ class ThreadSafeConsumerDict():
     passed to the get_and_increment method is present in the dictionary.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._lock = threading.Lock()
         self._dict: Dict[str, ThreadSafeCounter] = {}
-    
+
     def add(self, consumer_id: str) -> None:
         """Add a consumer to the dictionary."""
         with self._lock:
@@ -25,8 +26,14 @@ class ThreadSafeConsumerDict():
         """Return whether the dictionary contains the given consumer."""
         with self._lock:
             return consumer_id in self._dict
-    
-    def get_and_increment(self, consumer_id: str, threshold: int) -> int:
-        """Get the current value and increment it by 1 if it is less
+
+    def get_offset(self, consumer_id: str) -> int:
+        """Return the current offset value."""
+        return self._dict[consumer_id].get()
+
+    def get_offset_and_increment(
+        self, consumer_id: str, threshold: int
+    ) -> int:
+        """Get the current offset value and increment it by 1 if it is less
         than the threshold."""
         return self._dict[consumer_id].get_and_increment(threshold)

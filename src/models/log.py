@@ -1,4 +1,4 @@
-class Log():
+class Log:
     """
     Class representing a log message.
     """
