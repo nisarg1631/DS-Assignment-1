@@ -1,3 +1,10 @@
+"""
+
+Modified implementation of flask-expects-json under MIT license
+https://pypi.org/project/flask-expects-json/
+
+"""
+
 from functools import wraps
 from typing import Iterable
 
@@ -6,9 +13,7 @@ from flask import request, g, abort, current_app
 from jsonschema import validate, ValidationError, FormatChecker
 
 
-def expects_json(
-    schema=None, ignore_for=None, check_formats=False
-):
+def expects_json(schema=None, ignore_for=None, check_formats=False):
     if schema is None:
         schema = dict()
     if ignore_for is not None:
@@ -26,7 +31,12 @@ def expects_json(
             data = request.get_json(silent=True)
 
             if data is None:
-                return abort(400, ValidationError("Please send valid JSON data with request."))
+                return abort(
+                    400,
+                    ValidationError(
+                        "Please send valid JSON data with request."
+                    ),
+                )
 
             format_checker = None
 

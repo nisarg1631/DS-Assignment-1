@@ -27,17 +27,17 @@ class Topic:
         """Return the log at the given index."""
         return self._logs[index]
 
-    def add_log(self, log: Log) -> None:
-        """Add a log to the topic."""
-        self._logs.append(log)
+    def add_log(self, log: Log) -> int:
+        """Add a log to the topic and return its index."""
+        return self._logs.append(log)
 
     def add_producer(self, producer_id: str) -> None:
         """Add a producer to the topic."""
         self._producers.add(producer_id)
 
-    def add_consumer(self, consumer_id: str) -> None:
-        """Add a consumer to the topic."""
-        self._consumers.add(consumer_id)
+    def add_consumer(self, consumer_id: str, offset: int = 0) -> None:
+        """Add a consumer to the topic with given offset."""
+        self._consumers.add(consumer_id, offset)
 
     def check_producer(self, producer_id: str) -> bool:
         """Return whether the producer is in the topic."""

@@ -7,8 +7,8 @@ class ThreadSafeCounter:
     consumed by a consumer.
     """
 
-    def __init__(self) -> None:
-        self._value = 0
+    def __init__(self, offset: int = 0) -> None:
+        self._value = offset
         self._lock = threading.Lock()
 
     def get(self) -> int:
@@ -24,3 +24,7 @@ class ThreadSafeCounter:
             if self._value < threshold:
                 self._value += 1
         return current_value
+
+    def __str__(self) -> str:
+        """Return the string representation of the counter."""
+        return f"Counter({self._value})"

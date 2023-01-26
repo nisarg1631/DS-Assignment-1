@@ -17,10 +17,12 @@ class ThreadSafeLogQueue:
         self._queue: List[Log] = []
         self._lock = threading.Lock()
 
-    def append(self, log: Log) -> None:
-        """Append a log to the queue."""
+    def append(self, log: Log) -> int:
+        """Append a log to the queue and return the index of insertion."""
         with self._lock:
+            index = len(self._queue)
             self._queue.append(log)
+        return index
 
     def __len__(self) -> int:
         """Return the length of the queue."""
@@ -30,3 +32,11 @@ class ThreadSafeLogQueue:
     def __getitem__(self, index: int) -> Log:
         """Return the log at the given index."""
         return self._queue[index]
+
+    def __str__(self) -> str:
+        """Return the string representation of the queue."""
+        string = "ThreadSafeLogQueue("
+        for log in self._queue:
+            string += f"{log}, "
+        string += ")"
+        return string

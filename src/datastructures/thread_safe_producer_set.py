@@ -21,3 +21,7 @@ class ThreadSafeProducerSet:
         """Return whether the set contains the given producer."""
         with self._lock:
             return producer_id in self._set
+
+    def __str__(self) -> str:
+        """Return the string representation of the set."""
+        return f"ThreadSafeProducerSet({self._set})"
