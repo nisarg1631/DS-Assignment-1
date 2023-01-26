@@ -17,10 +17,10 @@ class ThreadSafeConsumerDict:
         self._lock = threading.Lock()
         self._dict: Dict[str, ThreadSafeCounter] = {}
 
-    def add(self, consumer_id: str) -> None:
-        """Add a consumer to the dictionary."""
+    def add(self, consumer_id: str, offset: int = 0) -> None:
+        """Add a consumer to the dictionary with given offset."""
         with self._lock:
-            self._dict[consumer_id] = ThreadSafeCounter()
+            self._dict[consumer_id] = ThreadSafeCounter(offset)
 
     def contains(self, consumer_id: str) -> bool:
         """Return whether the dictionary contains the given consumer."""
@@ -37,3 +37,11 @@ class ThreadSafeConsumerDict:
         """Get the current offset value and increment it by 1 if it is less
         than the threshold."""
         return self._dict[consumer_id].get_and_increment(threshold)
+
+    def __str__(self) -> str:
+        """Return the string representation of the dictionary."""
+        string = "ThreadSafeConsumerDict("
+        for key, value in self._dict.items():
+            string += f"{key}: {value}, "
+        string += ")"
+        return string
