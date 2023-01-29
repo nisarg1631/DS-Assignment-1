@@ -9,6 +9,12 @@
 
 ## Setup
 
+1. Under a (preferably new) python3 virtual environment, run `pip install -r requirements.txt` to install the dependencies.
+
+2. Configure the `PostgreSQL` database connection by setting the `SQLALCHEMY_DATABASE_URI` in the `config.py` file. Both read and write access is required.
+
+3. Run `python app.py` to start the application.
+
 ## Design
 
 The distributed queue has been implemented as a python application with the `Flask` framework for providing HTTP APIs to interact with the queue. For the persistence layer we use a `PostgreSQL` database. 
@@ -48,10 +54,16 @@ The database schema is as follows:
 ## Testing
 
 ### Unit Testing
+Test all the individual API endpoints using the `requests` library. Checked both the positive and negative cases.
 
 ### Concurrency Testing
+Test the thread-safety of the in-memory datastructures using the `threading` library. Created 10 producer threads and 10 consumer threads which would be interacting with the queue simultaneously. Checked that the consumer threads are able to consume the logs in the order they were produced by the producer threads. Ensured ordering by logging messages of the format `<producer_id> <log_id>`. While consuming the `<log_id>` should be in increasing order for each `<producer_id>`. The number of messages to be produced can be set by the `MESSAGES` parameter in the test file.
 
 ### Recovery Testing
+Test the recovery of the queue from a crash. Start a producer and a consumer. Kill the application. Start the application again. Check that the producer and consumer are able to interact with the queue as before. The producer should be able to produce logs and the consumer should be able to consume logs as long as the limit is not reached. Limit can be set by the `MESSAGES` parameter in the respective test files.
+
+### Performance Testing
+We tested both the performance of the queue and the library we provide. We used `asyncio` to make asynchronous requests to the queue using the library. With async consume calls we saw a 50% reduction in time taken to consume the logs. Also we saw a 30-40% improvement in the time taken to process multiple requests with threading enabled in the flask application.
 
 ## Difficulties
 
@@ -63,4 +75,4 @@ While it was fairly simple to implement the queue in-memory, it required some th
 
 ## Hyperparameters
 
-
+There are no hyperparameters in the queue itself. However in the library implementation as we have used the async requests module, we have provided the user with the option to set the number of requests to be made in parallel. This can be set by the `parallel_requests` parameter in the `async_requests` class. There are also other parameters such as `limit_per_host` and `limit` which can be used to limit the number of requests to be made to a particular host and the total number of requests to be made respectively. These parameters are provided by the `aiohttp` library. The `ttl_dns_cache` parameter can be used to set the time-to-live of the DNS cache. This parameter is also provided by the `aiohttp` library.
