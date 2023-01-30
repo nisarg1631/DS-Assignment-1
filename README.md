@@ -17,7 +17,14 @@
 
 ## Design
 
-The distributed queue has been implemented as a python application with the `Flask` framework for providing HTTP APIs to interact with the queue. For the persistence layer we use a `PostgreSQL` database. 
+The distributed queue has been implemented as a python application with the `Flask` framework for providing HTTP APIs to interact with the queue. For the persistence layer we use a `PostgreSQL` database. An execution of a request is as follows:
+
+1. The HTTP API endpoint is called with the appropriate parameters.
+2. The request is validated for schema using a decorator made in the `json_validator.py` file.
+3. The request is processed by the `views.py` file.
+4. The function in the `views.py` file extracts the parameters from the request and calls the appropriate function on the `master_queue` object initialized at the start of the application.
+5. The `master_queue` object does the necessary checks and database interactions and returns the appropriate response or throws an exception.
+6. The function in the `views.py` file returns the appropriate response to the HTTP API endpoint based on the response from the `master_queue` object.
 
 ### Project Structure
 - __src__ - the directory containing the primary application with the in-memory datastructures, models and API support
