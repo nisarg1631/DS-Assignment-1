@@ -67,7 +67,7 @@ def topics():
         )
 
 
-@app.route(rule="/register/consumer", methods=["POST"])
+@app.route(rule="/consumer/register", methods=["POST"])
 @expects_json(
     {
         "type": "object",
@@ -90,7 +90,7 @@ def register_consumer():
         )
 
 
-@app.route(rule="/register/producer", methods=["POST"])
+@app.route(rule="/producer/register", methods=["POST"])
 @expects_json(
     {
         "type": "object",
